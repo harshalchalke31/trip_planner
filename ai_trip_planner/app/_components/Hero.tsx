@@ -38,6 +38,7 @@ function Hero() {
             return;
         }
         // Otherwise navigate to create trip page
+        router.push('/create-new-trip')
     }
   return (
     <div className='mt-24 flex w-full justify-center '>
@@ -48,7 +49,7 @@ function Hero() {
             {/* Input box */}
             <div className='border rounded-2xl p-4 mt-5 relative'>
                 <Textarea placeholder='Create a Trip from San Francisco to Tokyo ...' 
-                className='w-full h-28 bg-transparent border-none focus-visible: ring-0 shadow-none resize-none'/>
+                className='w-full h-28 bg-transparent border-none focus-visible:ring-0 shadow-none resize-none'/>
                 <Button size={'icon'} className='absolute bottom-6 right-6' onClick={()=>onSend()}>
                     <Send className='h-4 w-4'/>
                 </Button>

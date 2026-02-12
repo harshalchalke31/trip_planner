@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
-import { SignIn, SignInButton } from '@clerk/nextjs'
+import { SignIn, SignInButton, useUser } from '@clerk/nextjs'
+import { PlusIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -19,7 +20,9 @@ function Header() {
             name:'Contact Us',
             path:'/contact-us'
         }
-    ] 
+    ]
+
+    const {user} = useUser()
   return (
     <div className='flex justify-between items-center p-4'>
         <div className='flex gap-2 items-center'>
@@ -34,9 +37,12 @@ function Header() {
                 
             ))}
         </div>
-        <SignInButton mode='modal'>
+        {!user? <SignInButton mode='modal'>
             <Button className='rounded-full'>Get Started</Button>
-        </SignInButton>
+        </SignInButton> :
+        <Link href={'create-new-trip'}>
+        <Button><PlusIcon /> Create New Trip</Button>
+        </Link>}
         
       
     </div>
