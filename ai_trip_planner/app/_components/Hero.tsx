@@ -10,26 +10,28 @@ import { Globe2, Send,
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
-function Hero() {
-    const suggestions = [
-        {
-            title:'Create New Trip',
-            icon:<Globe2 className='text-blue-400 h-5 w-5' />
-        },
-        {
-            title: "Discover hidden gems",
-            icon: <Compass className="text-blue-400 h-5 w-5" />
-        },
-        {
-            title: "Explore historical places",
-            icon: <Landmark className="text-amber-400 h-5 w-5" />
-        },
-        {
-            title: "Find popular attractions",
-            icon: <MapPin className="text-green-400 h-5 w-5" />
-        },
+export const suggestions = [
+    {
+        title:'Create New Trip',
+        icon:<Globe2 className='text-blue-400 h-5 w-5' />
+    },
+    {
+        title: "Discover hidden gems",
+        icon: <Compass className="text-blue-400 h-5 w-5" />
+    },
+    {
+        title: "Explore historical places",
+        icon: <Landmark className="text-amber-400 h-5 w-5" />
+    },
+    {
+        title: "Find popular attractions",
+        icon: <MapPin className="text-green-400 h-5 w-5" />
+    },
 
-    ]
+]
+
+function Hero() {
+
     const {user} = useUser()
     const router = useRouter()
     const onSend=()=>{

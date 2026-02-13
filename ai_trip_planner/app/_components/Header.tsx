@@ -19,7 +19,11 @@ function Header() {
         {
             name:'Contact Us',
             path:'/contact-us'
-        }
+        },
+        {
+            name: 'Developer',
+            path: 'https://harshalchalke31.github.io/harshalchalke31/'
+        },
     ]
 
     const {user} = useUser()
@@ -32,7 +36,7 @@ function Header() {
         <div className='flex gap-8 items-center rounded-full py-2 px-6 bg-primary/10 space-x-3'>
             {menuOptions.map((menu,index) =>(
                 <Link key={index} href={menu.path}>
-                    <h2 className='text-lg hover:scale-105 transition-all hover:bg-primary rounded-full px-2 py-2 hover:text-white'>{menu.name}</h2>
+                    <h2 className='text-lg hover:scale-105 transition-all hover:bg-primary rounded-full px-2 py-0 hover:text-white'>{menu.name}</h2>
                 </Link>
                 
             ))}
@@ -41,7 +45,7 @@ function Header() {
             <Button className='rounded-full'>Get Started</Button>
         </SignInButton> :
         <Link href={'create-new-trip'}>
-        <Button><PlusIcon /> Create New Trip</Button>
+        <Button className='rounded-full'><PlusIcon /> Create New Trip</Button>
         </Link>}
         
       
