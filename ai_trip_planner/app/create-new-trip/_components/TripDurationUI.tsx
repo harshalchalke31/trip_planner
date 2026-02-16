@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
 
-function TripDurationUI({onSelectedOption}:any) {
+function TripDurationUI({onSelectOption}:any) {
     
     const [days,setDays] = useState<number>(1)
     const dec = () => setDays((d) => Math.max(1, d-1))
@@ -21,7 +21,7 @@ function TripDurationUI({onSelectedOption}:any) {
             </Button>
         </div>
         <div className='mt-4 flex justify-center'>
-            <Button className='rounded-xl px-6' onClick={()=> onSelectedOption(`${days} Days`)}>Confirm</Button>
+            <Button className='rounded-xl px-6' onClick={()=> onSelectOption(`${days} Days`)}>Confirm</Button>
         </div>
       
     </div>

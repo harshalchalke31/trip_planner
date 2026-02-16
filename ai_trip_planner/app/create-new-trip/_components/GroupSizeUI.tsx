@@ -32,12 +32,12 @@ export const SelectGroupSize = [
 ]
 
 
-function GroupSizeUI({onSelectedOption}:any) {
+function GroupSizeUI({onSelectOption}:any) {
   return (
     <div className='grid grid-cols-2 md:grid-cols-4 gap-2 items-center mt-2'>
       {SelectGroupSize.map((item,index)=>(
         <div key={index} className='p-3 rounded-2xl bg-white hover:bg-blue-200 cursor-pointer'
-        onClick={()=>onSelectedOption(item.title+":"+item.people)}>
+        onClick={()=>onSelectOption(item.title+":"+item.people)}>
             <h2>{item.icon}</h2>
             <h2>{item.title}</h2>
         </div>
