@@ -8,5 +8,11 @@ export default defineSchema({
             email: v.string(),
             subscribtion: v.optional(v.string()),
 
+        }),
+
+        TripDetailTable: defineTable({
+            tripID: v.string(),
+            tripDetail: v.any(),
+            uid: v.id('UserTable')
         })
 })

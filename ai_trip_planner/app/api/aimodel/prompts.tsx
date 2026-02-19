@@ -21,3 +21,5 @@ resp: "Text Response",
 ui: "budget/groupSize/tripDuration/final"
 }
 `
+
+export const itinerary = ""

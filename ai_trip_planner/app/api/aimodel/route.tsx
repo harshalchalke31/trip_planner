@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
 import { PROMPT } from "./prompts"
-import { json } from "stream/consumers"
+
 
 const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPEN_ROUTER_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
+  apiKey: process.env.GROQ_API_KEY,
 })
 
 const safeJsonParse = (text: string | null | undefined) => {
@@ -26,23 +26,36 @@ const safeJsonParse = (text: string | null | undefined) => {
 export async function POST(req: NextRequest) {
 
     const {messages} = await req.json()    
-        try{
-            const completion = await openai.chat.completions.create({
-            model: "arcee-ai/trinity-mini:free",
-            response_format: { type: 'json_object'},
-            messages: [
-                {
-                    role: "system",
-                    content: PROMPT,
-                },
-                ...messages
-                ],
-            })
-            console.log(completion.choices[0].message)
-            const message = completion.choices[0].message
-            return NextResponse.json(JSON.parse(message.content??""))
+    try{
+        const completion = await openai.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        response_format: { type: 'json_object'},
+        messages: [
+            {
+                role: "system",
+                content: PROMPT,
+            },
+            ...messages
+            ],
+            temperature:0
+        })
+        console.log(completion.choices?.[0]?.message?.content)
+        const message = completion.choices?.[0]?.message?.content
+        const parsed = safeJsonParse(message)
+
+        if(!parsed){
+            return NextResponse.json(
+                {error: 'Model did not return safe json', raw: message},
+                {status:502}
+            )
         }
-        catch(e){
-            return NextResponse.json(e)
-        }
+
+        return NextResponse.json(parsed)
+    }
+    catch(e: any){
+        return NextResponse.json(
+            {error: e?.message ?? "Unknown Error", details: e},
+            {status: 500}
+        )
+    }
 }
