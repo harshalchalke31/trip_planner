@@ -39,17 +39,19 @@ function ChatBox() {
     const [isFinal, setIsFinal] = useState(false)
     const [tripDetail, setTripDetail] = useState<TripInfo>()
     const SaveTripDetail = useMutation(api.tripDetail.CreateTripDetail)
+    const [finalSaved, setFinalSaved] = useState(false);
     const {userDetail, setUserDetail} = useUserDetail()
 
 
-    const onSend = async() => {
-        if(!userInput?.trim()) return
+    const onSend = async(input?: string) => {
+        const text = (input ?? userInput ?? "").trim()
+        if(!text) return
 
         setUserInput('')
         setLoading(true)
         const newMessage:Message = {
             role:'user',
-            content: userInput??"",
+            content: text,
         }
 
         setMessages((prev:Message[])=>[...prev,newMessage])
@@ -67,30 +69,29 @@ function ChatBox() {
             ui:result?.data?.ui,
         }])
 
-        if(isFinal){
-            setTripDetail(result?.data?.trip_plan)
-            const tripID = uuidv4()
+        if (isFinal && !finalSaved) {
+        setFinalSaved(true);
 
-            if(!userDetail?._id){
-                setLoading(false)
-                return
-            }
-            await SaveTripDetail({
-                tripDetail:result?.data?.trip_plan,
-                tripID:tripID,
-                uid:userDetail._id
-            })
+        setTripDetail(result?.data?.trip_plan);
+        const tripID = uuidv4();
+
+        const tripRowID = await SaveTripDetail({
+        tripDetail: result?.data?.trip_plan,
+        tripID: tripID,
+        uid: userDetail?._id,
+        });
+
         }
         setLoading(false)
     }
 
     const RenderGenerativeUI= (ui:string) => {
         if(ui=='budget'){
-            return <BudgetUI onSelectOption={(v:string)=>{setUserInput(v); onSend()}} />
+            return <BudgetUI onSelectOption={(v:string)=>{setUserInput(v), onSend(v)}} />
         }else if (ui=='groupSize') {
-            return <GroupSizeUI onSelectOption={(v:string)=>{setUserInput(v); onSend()}} />
+            return <GroupSizeUI onSelectOption={(v:string)=>{setUserInput(v),onSend(v)}} />
         }else if (ui=='tripDuration'){
-            return <TripDurationUI onSelectOption={(v:string)=>{setUserInput(v); onSend()}} />
+            return <TripDurationUI onSelectOption={(v:string)=>{setUserInput(v),onSend(v)}} />
         }else if (ui=='final') {
             return <FinalUI viewTrip={()=>console.log()} disable={!tripDetail} />
         }
@@ -106,17 +107,17 @@ function ChatBox() {
             // onSend()
         }
     },[messages])
+    useEffect(() => {
+    if (isFinal && userInput === "OK") {
+        onSend("OK");
+    }
+    }, [isFinal, userInput]);
 
-    useEffect(()=>{
-        if (isFinal && userInput){
-            onSend()
-        }
-    },[isFinal])
 
     return (
     <div className='h-[76vh] flex flex-col'>
         {messages?.length==0 &&
-        <DefaultStateBox onSelectOption={(v:string)=>{setUserInput(v);onSend()}} />
+        <DefaultStateBox onSelectOption={(v:string)=>{onSend(v)}} />
         }
 
         {/* Display Messages */}

@@ -13,6 +13,6 @@ export default defineSchema({
         TripDetailTable: defineTable({
             tripID: v.string(),
             tripDetail: v.any(),
-            uid: v.id('UserTable')
+            uid: v.optional(v.id('UserTable')),
         })
 })
