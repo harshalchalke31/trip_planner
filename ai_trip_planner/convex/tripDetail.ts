@@ -3,13 +3,13 @@ import { mutation } from "./_generated/server";
 
 export const CreateTripDetail = mutation({
     args:{
-        tripId: v.string(),
+        tripID: v.string(),
         tripDetail: v.any(),
         uid: v.id('UserTable')
     },
     handler: async(ctx, args) =>{
         const result = await ctx.db.insert('TripDetailTable',{
-            tripID:args.tripId,
+            tripID:args.tripID,
             tripDetail:args.tripDetail,
             uid:args.uid,
         })

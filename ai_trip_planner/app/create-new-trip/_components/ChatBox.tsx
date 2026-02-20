@@ -9,11 +9,25 @@ import GroupSizeUI from './GroupSizeUI'
 import BudgetUI from './BudgetUI'
 import TripDurationUI from './TripDurationUI'
 import FinalUI from './FinalUI'
+import { useMutation } from 'convex/react'
+import { api } from '@/convex/_generated/api'
+import { useUserDetail } from '@/app/Provider'
+import {v4 as uuidv4} from 'uuid'
 
-type Message ={
+export type Message ={
     role: string,
     content:string,
     ui?:string,
+}
+
+export type TripInfo ={
+    budget:string,
+    destination:string,
+    duration: string,
+    group_size: string,
+    origin: string,
+    hotels: any,
+    itinerary: any,
 }
 
 function ChatBox() {
@@ -23,7 +37,10 @@ function ChatBox() {
     const [userInput, setUserInput] = useState<string>()
     const [loading, setLoading] = useState(false)
     const [isFinal, setIsFinal] = useState(false)
-    const [tripDetail, setTripDetail] = useState()
+    const [tripDetail, setTripDetail] = useState<TripInfo>()
+    const SaveTripDetail = useMutation(api.tripDetail.CreateTripDetail)
+    const {userDetail, setUserDetail} = useUserDetail()
+
 
     const onSend = async() => {
         if(!userInput?.trim()) return
@@ -52,6 +69,17 @@ function ChatBox() {
 
         if(isFinal){
             setTripDetail(result?.data?.trip_plan)
+            const tripID = uuidv4()
+
+            if(!userDetail?._id){
+                setLoading(false)
+                return
+            }
+            await SaveTripDetail({
+                tripDetail:result?.data?.trip_plan,
+                tripID:tripID,
+                uid:userDetail._id
+            })
         }
         setLoading(false)
     }
@@ -75,9 +103,15 @@ function ChatBox() {
         if (lastMessage?.ui?.trim().toLowerCase() === 'final'){
             setIsFinal(true)
             setUserInput("OK")
+            // onSend()
+        }
+    },[messages])
+
+    useEffect(()=>{
+        if (isFinal && userInput){
             onSend()
         }
-    })
+    },[isFinal])
 
     return (
     <div className='h-[76vh] flex flex-col'>
