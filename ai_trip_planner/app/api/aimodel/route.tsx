@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
-import { PROMPT } from "./prompts"
+import { itinerary, PROMPT, PROMPT2 } from "./prompts"
 
 
 const openai = new OpenAI({
@@ -25,7 +25,7 @@ const safeJsonParse = (text: string | null | undefined) => {
 
 export async function POST(req: NextRequest) {
 
-    const {messages} = await req.json()    
+    const {messages, isFinal} = await req.json()    
     try{
         const completion = await openai.chat.completions.create({
         model: "llama-3.1-8b-instant",
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         messages: [
             {
                 role: "system",
-                content: PROMPT,
+                content: isFinal? itinerary: PROMPT2,
             },
             ...messages
             ],

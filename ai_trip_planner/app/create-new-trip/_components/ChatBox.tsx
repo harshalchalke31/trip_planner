@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import axios from 'axios'
 import { Dot, Loader, Loader2, LoaderIcon, Send } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DefaultStateBox from './DefaultStateBox'
 import GroupSizeUI from './GroupSizeUI'
 import BudgetUI from './BudgetUI'
@@ -22,44 +22,64 @@ function ChatBox() {
     const [messages, setMessages] = useState<Message []>([])
     const [userInput, setUserInput] = useState<string>()
     const [loading, setLoading] = useState(false)
+    const [isFinal, setIsFinal] = useState(false)
+    const [tripDetail, setTripDetail] = useState()
+
     const onSend = async() => {
-        if(!userInput) return
+        if(!userInput?.trim()) return
 
         setUserInput('')
         setLoading(true)
         const newMessage:Message = {
             role:'user',
-            content: userInput,
+            content: userInput??"",
         }
 
         setMessages((prev:Message[])=>[...prev,newMessage])
 
         const result = await axios.post('/api/aimodel',{
-            messages: [...messages,newMessage],
+            messages: [...messages,newMessage].map(({role,content}) => ({role,content})),
+            isFinal: isFinal,
         })
 
-        setMessages((prev:Message[])=>[...prev,{
+        console.log("Trip details",result.data)
+
+        !isFinal && setMessages((prev:Message[])=>[...prev,{
             role:'assistant',
-            content:result?.data?.resp,
+            content:result?.data?.resp ?? JSON.stringify(result.data),
             ui:result?.data?.ui,
         }])
-        console.log(result.data.ui)
+
+        if(isFinal){
+            setTripDetail(result?.data?.trip_plan)
+        }
         setLoading(false)
     }
 
     const RenderGenerativeUI= (ui:string) => {
         if(ui=='budget'){
-            return <BudgetUI onSelectedOption={(v:string)=>{setUserInput(v); onSend()}} />
+            return <BudgetUI onSelectOption={(v:string)=>{setUserInput(v); onSend()}} />
         }else if (ui=='groupSize') {
-            return <GroupSizeUI onSelectedOption={(v:string)=>{setUserInput(v); onSend()}} />
+            return <GroupSizeUI onSelectOption={(v:string)=>{setUserInput(v); onSend()}} />
         }else if (ui=='tripDuration'){
-            return <TripDurationUI onSelectedOption={(v:string)=>{setUserInput(v); onSend()}} />
+            return <TripDurationUI onSelectOption={(v:string)=>{setUserInput(v); onSend()}} />
         }else if (ui=='final') {
-            return <FinalUI viewTrip={()=>console.log()} />
+            return <FinalUI viewTrip={()=>console.log()} disable={!tripDetail} />
         }
         return null
-    }
-  return (
+        }
+
+    //use effect hooks
+    useEffect(()=>{
+        const lastMessage = messages[messages.length-1]
+        if (lastMessage?.ui?.trim().toLowerCase() === 'final'){
+            setIsFinal(true)
+            setUserInput("OK")
+            onSend()
+        }
+    })
+
+    return (
     <div className='h-[76vh] flex flex-col'>
         {messages?.length==0 &&
         <DefaultStateBox onSelectOption={(v:string)=>{setUserInput(v);onSend()}} />
@@ -90,7 +110,7 @@ function ChatBox() {
             </div>
             }
 
-           
+            
         </section>
 
         {/* User Input Text Box */}
@@ -107,9 +127,9 @@ function ChatBox() {
             </div>
         </section>
 
-      
+        
     </div>
-  )
-}
+    )
+    }
 
 export default ChatBox
