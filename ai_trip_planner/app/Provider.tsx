@@ -1,6 +1,7 @@
 import Header from '@/app/_components/Header';
 import { UserDetailContext } from '@/context/UserDetailContext';
 import { api } from '@/convex/_generated/api';
+import { Doc } from '@/convex/_generated/dataModel';
 import { useUser } from '@clerk/nextjs';
 import { useMutation } from 'convex/react';
 import React, { useContext, useEffect, useState } from 'react'
@@ -12,7 +13,7 @@ function Provider({
 }>) {
 
   const CreateUser = useMutation(api.user.CreateNewUser)
-  const [userDetail, setUserDetail] = useState()
+  const [userDetail, setUserDetail] = useState<Doc <"UserTable"> | null>(null)
   const { user } = useUser()
 
   useEffect(()=>{
@@ -22,11 +23,12 @@ function Provider({
   const CreateNewUser = async() => {
     // Insert new user
     if (user) {
-      const result = CreateUser({
+      const result = await CreateUser({
         name: user?.fullName ?? "",
         email: user?.primaryEmailAddress?.emailAddress ?? "",
         imageUrl: user?.imageUrl,
       })
+      setUserDetail(result)
     }
   }
 
