@@ -12,7 +12,7 @@ type Props ={
 }
 
 function PlaceCardItem({activity}: Props) {
-  const [photoUrl, setPhotoUrl] = useState<string>()
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 
   useEffect(()=>{
     activity&&GetGooglePlaceDetail()

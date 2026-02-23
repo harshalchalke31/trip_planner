@@ -11,7 +11,7 @@ import TripDurationUI from './TripDurationUI'
 import FinalUI from './FinalUI'
 import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import { useUserDetail } from '@/app/Provider'
+import { useTripDetail, useUserDetail } from '@/app/Provider'
 import {v4 as uuidv4} from 'uuid'
 
 export type Message ={
@@ -75,6 +75,8 @@ function ChatBox() {
     const SaveTripDetail = useMutation(api.tripDetail.CreateTripDetail)
     const [finalSaved, setFinalSaved] = useState(false);
     const {userDetail, setUserDetail} = useUserDetail()
+    //@ts-ignore
+    const {tripDetailInfo, setTripDetailInfo} = useTripDetail()
 
 
     const onSend = async(input?: string) => {
@@ -107,6 +109,7 @@ function ChatBox() {
         setFinalSaved(true);
 
         setTripDetail(result?.data?.trip_plan);
+        setTripDetailInfo(result?.data?.trip_plan)
         const tripID = uuidv4();
 
         const tripRowID = await SaveTripDetail({
@@ -149,7 +152,7 @@ function ChatBox() {
 
 
     return (
-    <div className='h-[76vh] flex flex-col'>
+    <div className='h-[76vh] flex flex-col border rounded-2xl p-5 shadow'>
         {messages?.length==0 &&
         <DefaultStateBox onSelectOption={(v:string)=>{onSend(v)}} />
         }
