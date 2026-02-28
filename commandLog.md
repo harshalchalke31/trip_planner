@@ -19,3 +19,13 @@ npm i next@latest react@latest react-dom@latest
 
 ## Install Clerk
 npm i @clerk/nextjs@latest
+
+
+## Install acertinity timeline ui
+npx shadcn@latest add @aceternity/timeline
+
+## Install Mapbox
+npm install --save mapbox-gl
+
+## Install shadcn tooltip
+npx shadcn@latest add tooltip
