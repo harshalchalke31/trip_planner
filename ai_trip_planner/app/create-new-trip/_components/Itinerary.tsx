@@ -183,14 +183,15 @@ function Itinerary() {
         }))
     ]:[]
   return (
-    <div className="relative w-full h-[76vh] overflow-auto">
+    <div className="relative w-full h-[76vh] overflow-auto rounded-2xl border shadow">
       {tripData ? <Timeline data={data} tripData={tripData}/>:
         <div className='w-full'>
-            <h2 className='flex gap-2 items-center text-3xl text-black mb-4'><ArrowLeft /> Explore the World with a trip customised just for you...</h2>
-            <div className='relative w-full h-[65vh] overflow-hidden rounded-2xl shadow'>
+            
+            <div className='relative w-full h-[65vh] overflow-hidden rounded-2xl border'>
                 <Image src={'/placeholder.png'} alt='placeholder'width={800} height={800}
                 className='object-cover'/>
             </div>
+            <h2 className='flex gap-2 items-center text-3xl text-black mb-4 mt-5 ml-10'><ArrowLeft /> Explore the World with a trip customised just for you...</h2>
         </div>
 }
     </div>

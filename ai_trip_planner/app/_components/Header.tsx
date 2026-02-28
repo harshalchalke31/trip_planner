@@ -17,10 +17,10 @@ function Header() {
             name: 'My Trips',
             path: '/my-trips'
         },
-        {
-            name: 'Contact Us',
-            path: '/contact-us'
-        },
+        // {
+        //     name: 'Contact Us',
+        //     path: '/contact-us'
+        // },
         {
             name: 'Developer',
             path: 'https://harshalchalke31.github.io/harshalchalke31/'
