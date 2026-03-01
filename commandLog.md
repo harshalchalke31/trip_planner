@@ -29,3 +29,12 @@ npm install --save mapbox-gl
 
 ## Install shadcn tooltip
 npx shadcn@latest add tooltip
+
+## Extra tools used
+1) Shadcn
+2) Oklch
+3) untitledui
+4) arcjet
+5) open router
+6) googleplace api
+7) aceternity ui
